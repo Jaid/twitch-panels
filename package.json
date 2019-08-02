@@ -14,7 +14,7 @@
     "express": "^4.17.1",
     "got": "^9.6.0",
     "has-content": "^1.1.0",
-    "jaid-core": "^1.5.2",
+    "jaid-core": "^1.5.3",
     "jaid-logger": "^1.4.2",
     "lodash": "^4.17.15",
     "p-retry": "^4.1.0",
