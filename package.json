@@ -7,22 +7,9 @@
   "dependencies": {
     "@absolunet/fsp": "^1.6.1",
     "@babel/runtime": "^7.5.5",
-    "cheerio": "^1.0.0-rc.3",
-    "cheerio-util": "^2.1.0",
-    "ensure-array": "^1.0.0",
-    "essential-config": "^3.1.1",
-    "express": "^4.17.1",
-    "got": "^9.6.0",
-    "has-content": "^1.1.0",
-    "jaid-core": "^1.5.3",
-    "jaid-logger": "^1.4.2",
+    "jaid-core": "^1.6.0",
     "lodash": "^4.17.15",
-    "p-retry": "^4.1.0",
-    "parsecurrency": "^1.0.0",
-    "pg": "^7.12.0",
-    "pg-create-drop-db": "^1.0.1",
-    "sequelize": "^5.12.2",
-    "user-agents": "^1.0.335"
+    "puppeteer": "^1.19.0"
   },
   "devDependencies": {
     "acorn": "^6.2.1",
