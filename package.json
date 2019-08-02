@@ -7,7 +7,7 @@
   "dependencies": {
     "@absolunet/fsp": "^1.6.1",
     "@babel/runtime": "^7.5.5",
-    "jaid-core": "^1.6.0",
+    "jaid-core": "^1.6.1",
     "lodash": "^4.17.15",
     "puppeteer": "^1.19.0"
   },
@@ -21,7 +21,7 @@
     "eslint-config-jaid": "^1.28.0",
     "jest": "^24.8.0",
     "rimraf": "^2.6.3",
-    "webpack": "^4.39.0",
+    "webpack": "^4.39.1",
     "webpack-config-jaid": "^5.23.1"
   },
   "scripts": {
