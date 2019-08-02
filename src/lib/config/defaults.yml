@@ -1,0 +1,5 @@
+databaseHost: localhost
+databasePort: 5432
+databaseName: twitch-panels
+databaseUser: postgres
+databaseSchemaSync: alter

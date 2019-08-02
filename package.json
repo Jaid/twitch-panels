@@ -1,0 +1,53 @@
+{
+  "title": "TwitchPanels",
+  "private": true,
+  "webpackConfigJaid": "cli",
+  "version": "0.1.0",
+  "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
+  "dependencies": {
+    "@absolunet/fsp": "^1.6.1",
+    "@babel/runtime": "^7.5.5",
+    "cheerio": "^1.0.0-rc.3",
+    "cheerio-util": "^2.1.0",
+    "ensure-array": "^1.0.0",
+    "essential-config": "^3.1.1",
+    "express": "^4.17.1",
+    "got": "^9.6.0",
+    "has-content": "^1.1.0",
+    "jaid-core": "^1.5.2",
+    "jaid-logger": "^1.4.2",
+    "lodash": "^4.17.15",
+    "p-retry": "^4.1.0",
+    "parsecurrency": "^1.0.0",
+    "pg": "^7.12.0",
+    "pg-create-drop-db": "^1.0.1",
+    "sequelize": "^5.12.2",
+    "user-agents": "^1.0.335"
+  },
+  "devDependencies": {
+    "acorn": "^6.2.1",
+    "babel-jest": "^24.8.0",
+    "babel-preset-jaid": "^6.8.2",
+    "browserslist-config-jaid-node": "^2.2.1",
+    "delay": "^4.3.0",
+    "eslint": "^6.1.0",
+    "eslint-config-jaid": "^1.28.0",
+    "jest": "^24.8.0",
+    "rimraf": "^2.6.3",
+    "webpack": "^4.39.0",
+    "webpack-config-jaid": "^5.23.1"
+  },
+  "scripts": {
+    "clean": "rimraf dist/",
+    "start": "npm run build:dev && node --inspect=9229 $(npx find-by-extension-cli js --fullPath --cwd dist/package/development)",
+    "babel:prod": "rimraf dist/transpiled/production && NODE_ENV=production babel --out-dir dist/transpiled/production --source-maps true src",
+    "babel:dev": "rimraf dist/transpiled/development && NODE_ENV=development babel --out-dir dist/transpiled/development src",
+    "babel:test": "rimraf dist/transpiled/test && NODE_ENV=test babel --out-dir dist/transpiled/test src",
+    "build:prod": "NODE_ENV=production webpack",
+    "build:dev": "NODE_ENV=development webpack",
+    "test": "npm run build:prod && NODE_ENV=production MAIN=$(npx find-by-extension-cli js --fullPath --cwd dist/package/production) jest --runInBand",
+    "test:coverage": "npm run test:dev -- --coverage --json --outputFile=dist/jest/stats.json",
+    "test:dev": "npm run build:dev && NODE_ENV=test MAIN=$(npx find-by-extension-cli js --fullPath --cwd dist/package/development) jest --runInBand",
+    "test:debug": "npm run start"
+  }
+}
