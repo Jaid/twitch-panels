@@ -6,19 +6,24 @@ export default class {
   /**
    * @param {import("jaid-core").default} core
    */
-  async ready(core) {
-    core.koa.use(async context => {
-      context.body = require("!raw-loader!twitch-panel-html/index.html").default
-    })
+  async ready() {
     const browser = await puppeteer.launch({
       defaultViewport: {
-        width: 1920,
+        width: 320,
         height: 1080,
         isLandscape: true,
       },
+      devtools: false,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--font-render-hinting=medium",
+        "--enable-font-antialiasing",
+      ],
     })
     const page = await browser.newPage()
-    await page.goto(`http://localhost:${core.config.insecurePort}?mode=a`)
+    await page.goto("https://panel.jaid.codes?mode=a")
+    await page.evaluateHandle("document.fonts.ready")
     const buffer = await page.screenshot({
       omitBackground: true,
       fullPage: true,

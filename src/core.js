@@ -4,7 +4,9 @@ const core = new JaidCore({
   name: _PKG_TITLE,
   version: _PKG_VERSION,
   useGot: false,
-  insecurePort: 19156,
+  configSetup: {
+    a: 2,
+  },
 })
 
 export const logger = core.logger

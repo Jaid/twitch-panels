@@ -11,7 +11,7 @@
     "lodash": "^4.17.15",
     "puppeteer": "^1.19.0",
     "sharp": "^0.23.0",
-    "twitch-panel-html": "^1.1.1"
+    "twitch-panel-html": "^1.2.1"
   },
   "devDependencies": {
     "acorn": "^6.2.1",
