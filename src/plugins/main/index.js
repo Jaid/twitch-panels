@@ -7,12 +7,12 @@ export default class {
    */
   async ready(core) {
     core.koa.use(async context => {
-      context.body = require(`!raw-loader!${process.env.webappPath}/index.html`)
+      context.body = require("!raw-loader!twitch-panel-html/index.html").default
     })
     const browser = await puppeteer.launch()
     const page = await browser.newPage()
     await page.goto(`http://localhost:${core.config.insecurePort}`)
-    await page.screenshot({path: "example.png"})
+    await page.screenshot({path: "dist/panel.png"})
   }
 
 }
