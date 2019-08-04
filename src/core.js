@@ -15,7 +15,7 @@ const core = new JaidCore({
         },
       ],
     },
-    sensitiveKeys: ["twitchPassword"],
+    sensitiveKeys: ["twitchApiToken", "twitchAccessToken"],
   },
 })
 

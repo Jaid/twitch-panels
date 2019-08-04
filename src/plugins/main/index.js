@@ -6,7 +6,7 @@ import {stringify} from "query-string"
 import {isString} from "lodash"
 import fsp from "@absolunet/fsp"
 import shortid from "shortid"
-import {CookieJar} from "tough-cookie"
+import {CookieJar, Cookie} from "tough-cookie"
 import {logger, config, got, appFolder} from "src/core"
 import UserAgent from "user-agents"
 import CookieFileStore from "tough-cookie-file-store"
@@ -28,20 +28,29 @@ export default class {
       const outputFolder = isString(config.outputFolder) ? config.outputFolder : "dist/panels"
       await fsp.emptyDir(outputFolder)
       const cookieFile = path.join(appFolder, "cookies.json")
-      const authFile = path.join(appFolder, "auth.yml")
-      const authFileExists = await fsp.pathExists(authFile)
-      if (!authFileExists) {
-        throw new Error(`${authFile} not found`)
-      }
-      const {accessToken} = await fsp.readYaml(authFile)
       const cookieStore = new CookieFileStore(cookieFile)
+      cookieStore.putCookie
       const cookieJar = new CookieJar(cookieStore)
+      const cookies = {
+        api_token: config.twitchApiToken,
+        "auth-token": config.twitchAccessToken,
+      }
+      for (const [key, value] of Object.entries(cookies)) {
+        const cookie = new Cookie({
+          key,
+          value,
+          domain: "twitch.tv",
+          pathIsDefault: true,
+          secure: true,
+        })
+        cookieJar.setCookieSync(cookie, "https://twitch.tv")
+      }
       const sessionGot = got.extend({
         headers: {
           "Accept-Language": "en-US",
           "User-Agent": userAgentRoller.random().toString(),
           "Client-Id": "kimne78kx3ncx6brgo4mv6wki5h1ko",
-          Authorization: `OAuth ${accessToken}`,
+          Authorization: `OAuth ${config.twitchAccessToken}`,
           "Content-Type": "text/plain;charset=UTF-8",
         },
         cookieJar,
@@ -63,15 +72,6 @@ export default class {
       if (!twitchId) {
         throw new Error("Not logged in!")
       }
-      debugger
-      // const response = await sessionGot.post("https://passport.twitch.tv/login", {
-      //   body: {
-      //     username: config.twitchUser,
-      //     password: config.twitchPassword,
-      //     client_id: "kimne78kx3ncx6brgo4mv6wki5h1ko",
-      //   },
-      //   json: true,
-      // })
       const channelPanelsResponse = await sessionGot.post("https://gql.twitch.tv/gql", {
         body: [
           {
@@ -172,7 +172,7 @@ export default class {
             Accept: "application/vnd.twitchtv.v5+json; charset=UTF-8",
             "Content-Type": "application/json; charset=UTF-8",
             "X-Requested-With": "XMLHttpRequest",
-            "Twitch-Api-Token": cookieJar.store.idx["twitch.tv"]["/"].api_token,
+            "Twitch-Api-Token": config.twitchApiToken,
           },
         })
         const {url: uploadUrl, upload_id: uploadId} = JSON.parse(uploadPanelImageResponse.body)
@@ -201,7 +201,6 @@ export default class {
             },
           ] |> JSON.stringify,
         })
-        debugger
       })
       await Promise.all(createChannelPanelJobs)
     } catch (error) {
