@@ -147,7 +147,7 @@ export default class {
         const page = await browser.newPage()
         const query = {
           ...panel,
-          hasLink: Boolean(panel.link),
+          hasLink: panel.link ? "1" : "",
         }
         await page.goto(`https://panel.jaid.codes?${stringify(query)}`)
         await page.evaluateHandle("document.fonts.ready")
