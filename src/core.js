@@ -5,7 +5,15 @@ const core = new JaidCore({
   version: _PKG_VERSION,
   useGot: false,
   configSetup: {
-    a: 2,
+    defaults: {
+      outputFolder: true,
+      panels: [
+        {
+          title: "hi",
+          content: "Test",
+        },
+      ],
+    },
   },
 })
 

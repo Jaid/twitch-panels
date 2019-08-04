@@ -10,7 +10,9 @@
     "jaid-core": "^1.6.1",
     "lodash": "^4.17.15",
     "puppeteer": "^1.19.0",
-    "sharp": "^0.23.0"
+    "query-string": "^6.8.2",
+    "sharp": "^0.23.0",
+    "shortid": "^2.2.14"
   },
   "devDependencies": {
     "acorn": "^6.2.1",
