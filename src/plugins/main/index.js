@@ -24,12 +24,55 @@ export default class {
    * @param {Core} core
    */
   async ready() {
+    let browser
     try {
       const outputFolder = isString(config.outputFolder) ? config.outputFolder : "dist/panels"
       await fsp.emptyDir(outputFolder)
+      browser = await puppeteer.launch({
+        defaultViewport: {
+          width: 320,
+          height: 1080,
+          isLandscape: true,
+        },
+        devtools: false,
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--font-render-hinting=medium",
+          "--enable-font-antialiasing",
+        ],
+      })
+      const renderPanelsJobs = config.panels.map(async panel => {
+        const page = await browser.newPage()
+        const query = {
+          ...panel,
+          hasLink: panel.link ? "1" : "",
+        }
+        await page.goto(`https://panel.jaid.codes?${stringify(query)}`)
+        await page.evaluateHandle("document.fonts.ready")
+        const buffer = await page.screenshot({
+          omitBackground: true,
+          fullPage: true,
+        })
+        const sharpImage = sharp(buffer)
+        sharpImage.trim()
+        sharpImage.png()
+        const imageMeta = await sharpImage.metadata()
+        const imageBuffer = await sharpImage.toBuffer()
+        await fsp.outputFile(path.join(outputFolder, `${shortid()}.png`), imageBuffer)
+        return {
+          imageBuffer,
+          imageMeta,
+          query,
+        }
+      })
+      const panels = await Promise.all(renderPanelsJobs)
+      if (config.dry) {
+        logger.info("Ended early, becuase this was a dry run")
+        process.exit(0)
+      }
       const cookieFile = path.join(appFolder, "cookies.json")
       const cookieStore = new CookieFileStore(cookieFile)
-      cookieStore.putCookie
       const cookieJar = new CookieJar(cookieStore)
       const cookies = {
         api_token: config.twitchApiToken,
@@ -109,7 +152,7 @@ export default class {
         })
       })
       await Promise.all(deleteChannelPanelJobs)
-      const createChannelPanelJobs = config.panels.map(async panel => {
+      for (const panel of panels) {
         const createChannelPanelResponse = await sessionGot.post("https://gql.twitch.tv/gql", {
           body: [
             {
@@ -130,43 +173,12 @@ export default class {
           ] |> JSON.stringify,
         })
         const newPanelId = JSON.parse(createChannelPanelResponse.body)[0].data.createPanel.panel.id
-        const browser = await puppeteer.launch({
-          defaultViewport: {
-            width: 320,
-            height: 1080,
-            isLandscape: true,
-          },
-          devtools: false,
-          args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--font-render-hinting=medium",
-            "--enable-font-antialiasing",
-          ],
-        })
-        const page = await browser.newPage()
-        const query = {
-          ...panel,
-          hasLink: panel.link ? "1" : "",
-        }
-        await page.goto(`https://panel.jaid.codes?${stringify(query)}`)
-        await page.evaluateHandle("document.fonts.ready")
-        const buffer = await page.screenshot({
-          omitBackground: true,
-          fullPage: true,
-        })
-        const sharpImage = sharp(buffer)
-        sharpImage.trim()
-        sharpImage.png()
-        const imageMeta = await sharpImage.metadata()
-        const imageBuffer = await sharpImage.toBuffer()
-        await fsp.outputFile(path.join(outputFolder, `${shortid()}.png`), imageBuffer)
         const uploadPanelImageResponse = await sessionGot.post(`https://api.twitch.tv/v5/users/${twitchId}/upload_panel_image`, {
           body: {
             left: 0,
             top: 0,
-            width: imageMeta.width,
-            height: imageMeta.height,
+            width: panel.imageMeta.width,
+            height: panel.imageMeta.height,
           } |> JSON.stringify,
           headers: {
             Accept: "application/vnd.twitchtv.v5+json; charset=UTF-8",
@@ -177,7 +189,7 @@ export default class {
         })
         const {url: uploadUrl, upload_id: uploadId} = JSON.parse(uploadPanelImageResponse.body)
         await got.put(uploadUrl, {
-          body: imageBuffer,
+          body: panel.imageBuffer,
         })
         await sessionGot.post("https://gql.twitch.tv/gql", {
           body: [
@@ -188,7 +200,7 @@ export default class {
                   id: newPanelId,
                   description: "",
                   title: "",
-                  linkURL: panel.link || "",
+                  linkURL: panel.query.link || "",
                   imageURL: `https://panels-images.twitch.tv/panel-${twitchId}-image-${uploadId}`,
                 },
               },
@@ -201,13 +213,13 @@ export default class {
             },
           ] |> JSON.stringify,
         })
-      })
-      await Promise.all(createChannelPanelJobs)
+      }
     } catch (error) {
       logger.error("Failed to run: %s", error)
       debugger
     }
     debugger
+    await browser?.close()
     process.exit(0)
   }
 

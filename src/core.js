@@ -6,6 +6,7 @@ const core = new JaidCore({
   gotLogLevel: "info",
   configSetup: {
     defaults: {
+      dry: true,
       twitchUser: "jaidchen",
       outputFolder: true,
       panels: [
