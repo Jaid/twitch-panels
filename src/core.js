@@ -15,6 +15,19 @@ const core = new JaidCore({
           content: "Test",
         },
       ],
+      commands: [
+        {
+          command: "!hi",
+          example: "!hi abc",
+        },
+      ],
+      answers: [
+        {
+          question: "What is your password?",
+          answer: "hunter2",
+        },
+      ],
+
     },
     sensitiveKeys: ["twitchApiToken", "twitchAccessToken"],
   },

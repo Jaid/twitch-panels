@@ -10,6 +10,7 @@ import {CookieJar, Cookie} from "tough-cookie"
 import {logger, config, got, appFolder} from "src/core"
 import UserAgent from "user-agents"
 import CookieFileStore from "tough-cookie-file-store"
+import {commandsToPanels, answersToPanels} from "lib/addons"
 
 const userAgentRoller = new UserAgent({deviceCategory: "tablet"})
 
@@ -42,13 +43,20 @@ export default class {
           "--enable-font-antialiasing",
         ],
       })
-      const renderPanelsJobs = config.panels.map(async panel => {
+      const panelDescriptions = [
+        ...config.panels || [],
+        ...answersToPanels(config.answers || []),
+        ...commandsToPanels(config.commands || []),
+      ]
+      const renderPanelsJobs = panelDescriptions.map(async panel => {
         const page = await browser.newPage()
         const query = {
           ...panel,
           hasLink: panel.link ? "1" : "",
         }
-        await page.goto(`https://panel.jaid.codes?${stringify(query)}`)
+        const panelUrl = `https://panel.jaid.codes?${stringify(query)}`
+        logger.info("Rendering %s?%s", "https://panel.jaid.codes", stringify(query))
+        await page.goto(panelUrl)
         await page.evaluateHandle("document.fonts.ready")
         const buffer = await page.screenshot({
           omitBackground: true,
