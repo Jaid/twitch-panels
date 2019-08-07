@@ -16,7 +16,7 @@
     "shortid": "^2.2.14",
     "tough-cookie": "^3.0.1",
     "tough-cookie-file-store": "^1.2.0",
-    "user-agents": "^1.0.339"
+    "user-agents": "^1.0.340"
   },
   "devDependencies": {
     "acorn": "^6.2.1",
