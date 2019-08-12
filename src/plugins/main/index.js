@@ -100,7 +100,7 @@ export default class {
         headers: {
           "Accept-Language": "en-US",
           "User-Agent": userAgentRoller.random().toString(),
-          "Client-Id": "kimne78kx3ncx6brgo4mv6wki5h1ko",
+          "Client-Id": config.twitchWebClientId,
           Authorization: `OAuth ${config.twitchAccessToken}`,
           "Content-Type": "text/plain;charset=UTF-8",
         },
