@@ -1,4 +1,10 @@
-export const commandsToPanels = commands => commands.map(command => {
+/**
+ * @callback CommandMapper
+ * @param {import("../core").Command} command
+ * @return {import("../core").Panel}
+ */
+
+export const commandsToPanels = commands => commands.map(/** @type {CommandMapper} */ command => {
   const description = command.description || "Description"
   return {
     title: `${command.command}`,
@@ -10,7 +16,13 @@ export const commandsToPanels = commands => commands.map(command => {
   }
 })
 
-export const answersToPanels = answers => answers.map(({question, answer, panel}) => {
+/**
+ * @callback AnswerMapper
+ * @param {import("../core").Answer} answer
+ * @return {import("../core").Panel}
+ */
+
+export const answersToPanels = answers => answers.map(/** @type {AnswerMapper} */ ({question, answer, panel}) => {
   return {
     title: question,
     content: answer,
