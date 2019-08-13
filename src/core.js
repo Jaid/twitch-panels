@@ -57,6 +57,7 @@ const core = new JaidCore({
 /**
  * @typedef {Object} Command
  * @prop {string} command
+ * @prop {string} description
  * @prop {string} example
  * @prop {Panel} panel
  */
