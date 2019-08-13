@@ -16,10 +16,10 @@
     "shortid": "^2.2.14",
     "tough-cookie": "^3.0.1",
     "tough-cookie-file-store": "^1.2.0",
-    "user-agents": "^1.0.346"
+    "user-agents": "^1.0.347"
   },
   "devDependencies": {
-    "acorn": "^6.3.0",
+    "acorn": "^7.0.0",
     "babel-jest": "^24.8.0",
     "babel-preset-jaid": "^6.9.0",
     "browserslist-config-jaid-node": "^2.2.1",
