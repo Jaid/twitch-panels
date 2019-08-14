@@ -25,6 +25,9 @@ export default class {
    * @param {Core} core
    */
   async ready() {
+    /**
+     * @type {import("puppeteer").Browser}
+     */
     let browser
     try {
       const outputFolder = isString(config.outputFolder) ? config.outputFolder : "dist/panels"
@@ -32,7 +35,7 @@ export default class {
       browser = await puppeteer.launch({
         defaultViewport: {
           width: 320,
-          height: 1080,
+          height: 600,
           isLandscape: true,
         },
         devtools: false,
@@ -48,20 +51,22 @@ export default class {
         ...answersToPanels(config.answers || []),
         ...commandsToPanels(config.commands || []),
       ]
+      panelDescriptions.reverse()
       const renderPanelsJobs = panelDescriptions.map(async panel => {
-        const page = await browser.newPage()
         const query = {
           ...panel,
           hasLink: panel.link ? "1" : "",
+          borderTopRightRadius: 0,
         }
         const panelUrl = `https://panel.jaid.codes?${stringify(query)}`
         logger.info("Rendering %s?%s", "https://panel.jaid.codes", stringify(query))
+        const page = await browser.newPage()
         await page.goto(panelUrl)
         await page.evaluateHandle("document.fonts.ready")
         const buffer = await page.screenshot({
           omitBackground: true,
-          fullPage: true,
         })
+        await page.close()
         const sharpImage = sharp(buffer)
         sharpImage.trim()
         sharpImage.png()
@@ -76,7 +81,7 @@ export default class {
       })
       const panels = await Promise.all(renderPanelsJobs)
       if (config.dry) {
-        logger.info("Ended early, becuase this was a dry run")
+        logger.info("Ended early, because this was a dry run")
         process.exit(0)
       }
       const cookieFile = path.join(appFolder, "cookies.json")

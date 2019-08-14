@@ -7,6 +7,7 @@
   "dependencies": {
     "@absolunet/fsp": "^1.6.1",
     "@babel/runtime": "^7.5.5",
+    "ensure-array": "^1.0.0",
     "got": "^9.6.0",
     "jaid-core": "^4.3.0",
     "lodash": "^4.17.15",

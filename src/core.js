@@ -60,6 +60,7 @@ const core = new JaidCore({
  * @prop {string} description
  * @prop {string} example
  * @prop {Panel} panel
+ * @prop {"mod"|"subOrVip"} [permission]
  */
 
 /**

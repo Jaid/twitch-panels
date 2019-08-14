@@ -1,20 +1,44 @@
+import ensureArray from "ensure-array"
+import {orderBy} from "lodash"
+
 /**
  * @callback CommandMapper
  * @param {import("../core").Command} command
  * @return {import("../core").Panel}
  */
 
-export const commandsToPanels = commands => commands.map(/** @type {CommandMapper} */ command => {
-  const description = command.description || "Description"
-  return {
-    title: `${command.command}`,
-    icon: "comment",
-    content: `${description}${command.example ? `\n{bold:Beispiel}:{chat:${command.example}}` : ""}`,
-    titleUppercase: "",
-    themeColor: "#4d7d28",
-    ...command.panel || {},
-  }
-})
+/**
+ * @param {import("../core").Command[]} commands
+ * @return {import("../core").Panel[]}
+ */
+export const commandsToPanels = commands => {
+  const commandsSorted = orderBy(commands, [command => command.permission, command => command.command], ["desc", "asc"])
+  return commandsSorted.map(/** @type {CommandMapper} */ command => {
+    const colors = {
+      mod: "#E40000",
+      subOrVip: "#00D8EB",
+    }
+    let content = ""
+    if (command.permission === "mod") {
+      content += "{iconcenter:lock/Nur für Moderatoren}"
+    }
+    if (command.permission === "subOrVip") {
+      content += "{iconcenter:lock/Nur für Subscriber, VIPs und Mods}"
+    }
+    content += command.description
+    if (command.example) {
+      content += `{br:20}{colored:Beispiel:}{br:10}{chat:${ensureArray(command.example).join("\n")}}`
+    }
+    return {
+      content,
+      title: `!${command.command}`,
+      icon: "comment",
+      titleUppercase: "",
+      themeColor: colors[command.permission] || "#0072AE",
+      ...command.panel || {},
+    }
+  })
+}
 
 /**
  * @callback AnswerMapper
