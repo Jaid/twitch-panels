@@ -3,7 +3,7 @@ import path from "path"
 import puppeteer from "puppeteer"
 import sharp from "sharp"
 import {stringify} from "query-string"
-import {isString, isNumber} from "lodash"
+import {isString, isNumber, random} from "lodash"
 import fsp from "@absolunet/fsp"
 import shortid from "shortid"
 import {CookieJar, Cookie} from "tough-cookie"
@@ -48,6 +48,7 @@ export default class {
         }
       }
       panelDescriptions.reverse()
+      const rainbowStartHue = random(360)
       const renderPanelsJobs = panelDescriptions.map(async (panel, index) => {
         const query = {
           contentFont: "Lexend Deca",
@@ -59,7 +60,7 @@ export default class {
           ...panel,
         }
         if (config.rainbow |> isNumber) {
-          query.themeColor = `hsl(${130 + index * config.rainbow}, 100%, 50%)`
+          query.themeColor = `hsl(${rainbowStartHue + index * config.rainbow}, 100%, 45%)`
         }
         const panelUrl = `https://panel.jaid.codes?${stringify(query)}`
         logger.info("Rendering %s?%s", "https://panel.jaid.codes", stringify(query))
