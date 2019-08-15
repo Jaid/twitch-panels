@@ -10,6 +10,7 @@ const core = new JaidCore({
       dry: true,
       twitchUser: "jaidchen",
       outputFolder: true,
+      rainbow: false,
       twitchWebClientId: "kimne78kx3ncx6brgo4mv6wki5h1ko",
       panels: [
         {
@@ -72,6 +73,7 @@ const core = new JaidCore({
  * @prop {Command[]} commands
  * @prop {Answer[]} answers
  * @prop {string} twitchWebClientId
+ * @prop {number|false} rainbow
  */
 
 /**
