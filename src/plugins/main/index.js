@@ -74,7 +74,7 @@ export default class {
         sharpImage.png()
         const imageMeta = await sharpImage.metadata()
         const imageBuffer = await sharpImage.toBuffer()
-        const fileName = `${padStart(index, 3, 0)}.png`
+        const fileName = `${padStart(index + 1, 3, 0)}.png`
         await fsp.outputFile(path.join(outputFolder, fileName), imageBuffer)
         return {
           imageBuffer,
