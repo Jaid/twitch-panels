@@ -58,7 +58,7 @@ export default class {
           ...panel,
         }
         if (config.rainbow |> isNumber) {
-          query.themeColor = `hsl(${rainbowStartHue + index * config.rainbow}, 100%, 45%)`
+          query.themeColor = `hsl(${rainbowStartHue + index * config.rainbow}, 100%, 47%)`
         }
         const panelUrl = `https://panel.jaid.codes?${stringify(query)}`
         logger.info("Rendering %s?%s", "https://panel.jaid.codes", stringify(query))
