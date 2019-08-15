@@ -3,9 +3,8 @@ import path from "path"
 import puppeteer from "puppeteer"
 import sharp from "sharp"
 import {stringify} from "query-string"
-import {isString, isNumber, random} from "lodash"
+import {isString, isNumber, random, padStart} from "lodash"
 import fsp from "@absolunet/fsp"
-import shortid from "shortid"
 import {CookieJar, Cookie} from "tough-cookie"
 import {logger, config, got, appFolder} from "src/core"
 import UserAgent from "user-agents"
@@ -47,7 +46,6 @@ export default class {
           Array.prototype.push.apply(panelDescriptions, addonHandler(config[addon]))
         }
       }
-      panelDescriptions.reverse()
       const rainbowStartHue = random(360)
       const renderPanelsJobs = panelDescriptions.map(async (panel, index) => {
         const query = {
@@ -76,7 +74,8 @@ export default class {
         sharpImage.png()
         const imageMeta = await sharpImage.metadata()
         const imageBuffer = await sharpImage.toBuffer()
-        await fsp.outputFile(path.join(outputFolder, `${shortid()}.png`), imageBuffer)
+        const fileName = `${padStart(index, 3, 0)}.png`
+        await fsp.outputFile(path.join(outputFolder, fileName), imageBuffer)
         return {
           imageBuffer,
           imageMeta,
@@ -84,6 +83,7 @@ export default class {
         }
       })
       const panels = await Promise.all(renderPanelsJobs)
+      panels.reverse() // Twitch panel editor needs them in reverse order
       if (config.dry) {
         logger.info("Ended early, because this was a dry run")
         process.exit(0)
