@@ -8,6 +8,7 @@ const job = async () => {
     plugins[pluginName] = pluginsRequire(value).default
   }
   await core.init(plugins)
+  await core.close()
 }
 
 job()

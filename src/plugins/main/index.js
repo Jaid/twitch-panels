@@ -10,20 +10,14 @@ import {CookieJar, Cookie} from "tough-cookie"
 import {logger, config, got, appFolder} from "src/core"
 import UserAgent from "user-agents"
 import CookieFileStore from "tough-cookie-file-store"
-import {commandsToPanels, answersToPanels} from "lib/addons"
+import hasContent from "has-content"
 
 const userAgentRoller = new UserAgent({deviceCategory: "tablet"})
 
-/**
- * @typedef {Object} Core
- * @prop {import("got").GotInstance} got
- */
+const addons = ["answers", "commands"]
 
 export default class {
 
-  /**
-   * @param {Core} core
-   */
   async ready() {
     /**
      * @type {import("puppeteer").Browser}
@@ -46,17 +40,23 @@ export default class {
           "--enable-font-antialiasing",
         ],
       })
-      const panelDescriptions = [
-        ...config.panels || [],
-        ...answersToPanels(config.answers || []),
-        ...commandsToPanels(config.commands || []),
-      ]
+      const panelDescriptions = [...config.panels || []]
+      for (const addon of addons) {
+        const addonHandler = require(`../../panelTypes/${addon}`).default
+        if (config[addon] |> hasContent) {
+          Array.prototype.push.apply(panelDescriptions, addonHandler(config[addon]))
+        }
+      }
       panelDescriptions.reverse()
       const renderPanelsJobs = panelDescriptions.map(async panel => {
         const query = {
-          ...panel,
+          contentFont: "Lexend Deca",
+          centerFont: "Blinker",
+          centerFontSize: 18,
+          titleUppercase: "",
           hasLink: panel.link ? "1" : "",
-          borderTopRightRadius: 0,
+          mode: "output",
+          ...panel,
         }
         const panelUrl = `https://panel.jaid.codes?${stringify(query)}`
         logger.info("Rendering %s?%s", "https://panel.jaid.codes", stringify(query))
@@ -229,11 +229,8 @@ export default class {
       }
     } catch (error) {
       logger.error("Failed to run: %s", error)
-      debugger
     }
-    debugger
     await browser?.close()
-    process.exit(0)
   }
 
 }

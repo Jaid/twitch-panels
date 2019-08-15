@@ -9,6 +9,7 @@
     "@babel/runtime": "^7.5.5",
     "ensure-array": "^1.0.0",
     "got": "^9.6.0",
+    "has-content": "^1.1.0",
     "jaid-core": "^4.3.0",
     "lodash": "^4.17.15",
     "puppeteer": "^1.19.0",

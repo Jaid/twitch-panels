@@ -11,7 +11,7 @@ import {orderBy} from "lodash"
  * @param {import("../core").Command[]} commands
  * @return {import("../core").Panel[]}
  */
-export const commandsToPanels = commands => {
+export default commands => {
   const commandsSorted = orderBy(commands, [command => command.permission, command => command.command], ["desc", "asc"])
   return commandsSorted.map(/** @type {CommandMapper} */ command => {
     const colors = {
@@ -23,37 +23,18 @@ export const commandsToPanels = commands => {
       content += "{iconcenter:lock/Nur für Moderatoren}"
     }
     if (command.permission === "subOrVip") {
-      content += "{iconcenter:lock/Nur für Subscriber, VIPs und Mods}"
+      content += "{iconcenter:star/Nur für Subscriber, VIPs und Moderatoren}"
     }
     content += command.description
     if (command.example) {
-      content += `{br:20}{colored:Beispiel:}{br:10}{chat:${ensureArray(command.example).join("\n")}}`
+      content += `{br:10}{colored:Beispiel:}{br:4}{chat:${ensureArray(command.example).join("\n")}}`
     }
     return {
       content,
       title: `!${command.command}`,
       icon: "comment",
-      titleUppercase: "",
       themeColor: colors[command.permission] || "#0072AE",
       ...command.panel || {},
     }
   })
 }
-
-/**
- * @callback AnswerMapper
- * @param {import("../core").Answer} answer
- * @return {import("../core").Panel}
- */
-
-export const answersToPanels = answers => answers.map(/** @type {AnswerMapper} */ ({question, answer, panel}) => {
-  return {
-    title: question,
-    content: answer,
-    icon: "question-circle-o",
-    titleSize: 20,
-    themeColor: "#287d55",
-    titleUppercase: "",
-    ...panel || {},
-  }
-})
