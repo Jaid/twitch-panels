@@ -32,6 +32,7 @@ export default commands => {
     return {
       content,
       title: `!${command.command}`,
+      titleFont: "Ubuntu",
       icon: "comment",
       titleFontSize: 24,
       themeColor: colors[command.permission] || "#0072AE",
