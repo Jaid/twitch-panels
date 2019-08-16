@@ -20,10 +20,10 @@ export default commands => {
     }
     let content = ""
     if (command.permission === "mod") {
-      content += "{iconcenter:lock/Nur für Moderatoren}"
+      content += "{iconcenter:lock/Nur für Moderatoren}{br:6}"
     }
     if (command.permission === "subOrVip") {
-      content += "{iconcenter:star/Nur für Subscriber, VIPs und Moderatoren}"
+      content += "{iconcenter:star/Nur für Subscriber, VIPs und Moderatoren}{br:6}"
     }
     content += command.description
     if (command.example) {
