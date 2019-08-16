@@ -17,17 +17,17 @@
     "sharp": "^0.23.0",
     "tough-cookie": "^3.0.1",
     "tough-cookie-file-store": "^1.2.0",
-    "user-agents": "^1.0.349"
+    "user-agents": "^1.0.350"
   },
   "devDependencies": {
     "acorn": "^7.0.0",
-    "babel-jest": "^24.8.0",
+    "babel-jest": "^24.9.0",
     "babel-preset-jaid": "^6.9.0",
     "browserslist-config-jaid-node": "^2.2.1",
     "delay": "^4.3.0",
     "eslint": "^6.1.0",
     "eslint-config-jaid": "^1.28.0",
-    "jest": "^24.8.0",
+    "jest": "^24.9.0",
     "rimraf": "^3.0.0",
     "webpack": "^4.39.2",
     "webpack-config-jaid": "^5.27.1"
