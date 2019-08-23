@@ -10,14 +10,14 @@
     "ensure-array": "^1.0.0",
     "got": "^9.6.0",
     "has-content": "^1.1.0",
-    "jaid-core": "^4.3.2",
+    "jaid-core": "^4.5.0",
     "lodash": "^4.17.15",
     "puppeteer": "^1.19.0",
     "query-string": "^6.8.2",
     "sharp": "^0.23.0",
     "tough-cookie": "^3.0.1",
     "tough-cookie-file-store": "^1.2.0",
-    "user-agents": "^1.0.353"
+    "user-agents": "^1.0.357"
   },
   "devDependencies": {
     "acorn": "^7.0.0",
@@ -25,12 +25,12 @@
     "babel-preset-jaid": "^6.9.0",
     "browserslist-config-jaid-node": "^2.2.2",
     "delay": "^4.3.0",
-    "eslint": "^6.2.0",
-    "eslint-config-jaid": "^1.28.0",
+    "eslint": "^6.2.1",
+    "eslint-config-jaid": "^1.28.2",
     "jest": "^24.9.0",
     "rimraf": "^3.0.0",
     "webpack": "^4.39.2",
-    "webpack-config-jaid": "^5.27.1"
+    "webpack-config-jaid": "^5.27.2"
   },
   "scripts": {
     "clean": "rimraf dist/",
