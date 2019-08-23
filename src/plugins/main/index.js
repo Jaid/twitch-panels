@@ -10,6 +10,7 @@ import {logger, config, got, appFolder} from "src/core"
 import UserAgent from "user-agents"
 import CookieFileStore from "tough-cookie-file-store"
 import hasContent from "has-content"
+import ensureArray from "ensure-array"
 
 const userAgentRoller = new UserAgent({deviceCategory: "tablet"})
 
@@ -59,6 +60,11 @@ export default class {
         }
         if (config.rainbow |> isNumber) {
           query.themeColor = `hsl(${rainbowStartHue + index * config.rainbow}, 100%, 47%)`
+        }
+        if (query.points) {
+          query.content = query.content || ""
+          query.content += "{br:6}"
+          query.content += ensureArray(query.points).map(line => `{center:${line}}`).join("{br:2}")
         }
         const panelUrl = `https://panel.jaid.codes?${stringify(query)}`
         logger.info("Rendering %s?%s", "https://panel.jaid.codes", stringify(query))
