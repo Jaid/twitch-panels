@@ -12,7 +12,7 @@ import {orderBy} from "lodash"
  * @return {import("../core").Panel[]}
  */
 export default commands => {
-  const commandsSorted = orderBy(commands, [command => command.permission, command => command.command], ["desc", "asc"])
+  const commandsSorted = orderBy(commands, [command => command.permission || 0, command => command.usage], ["desc", "asc"])
   return commandsSorted.map(/** @type {CommandMapper} */ command => {
     const colors = {
       mod: "#E40000",
@@ -22,7 +22,7 @@ export default commands => {
     if (command.permission === "mod") {
       content += "{iconcenter:lock/Nur für Moderatoren}{br:6}"
     }
-    if (command.permission === "subOrVip") {
+    if (command.permission === "sub-or-vip") {
       content += "{iconcenter:star/Nur für Subscriber, VIPs und Moderatoren}{br:6}"
     }
     content += command.description
@@ -31,7 +31,7 @@ export default commands => {
     }
     return {
       content,
-      title: `!${command.command}`,
+      title: command.usage,
       titleFont: "Ubuntu",
       icon: "comment",
       titleFontSize: 24,

@@ -18,6 +18,12 @@ const addons = ["answers", "commands"]
 
 export default class {
 
+  async init() {
+    const commandsResponse = await got("https://jaidbot.jaid.codes/commands", {json: true})
+    this.commands = commandsResponse.body
+    this.answers = config.answers
+  }
+
   async ready() {
     /**
      * @type {import("puppeteer").Browser}
@@ -43,8 +49,8 @@ export default class {
       const panelDescriptions = [...config.panels || []]
       for (const addon of addons) {
         const addonHandler = require(`../../panelTypes/${addon}`).default
-        if (config[addon] |> hasContent) {
-          Array.prototype.push.apply(panelDescriptions, addonHandler(config[addon]))
+        if (this[addon] |> hasContent) {
+          Array.prototype.push.apply(panelDescriptions, addonHandler(this[addon]))
         }
       }
       const rainbowStartHue = random(360)
