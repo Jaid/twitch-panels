@@ -1,6 +1,5 @@
 {
   "title": "TwitchPanels",
-  "private": true,
   "webpackConfigJaid": "cli",
   "version": "2.0.2",
   "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
@@ -43,5 +42,6 @@
     "test:coverage": "npm run test:dev -- --coverage --json --outputFile=dist/jest/stats.json",
     "test:dev": "npm run build:dev && NODE_ENV=test MAIN=$(npx find-by-extension-cli js --fullPath --cwd dist/package/development) jest --runInBand",
     "test:debug": "npm run start"
-  }
+  },
+  "name": "twitch-panels"
 }
