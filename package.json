@@ -44,5 +44,6 @@
     "test:debug": "npm run start",
     "prepareActionJest": "npm run build:prod"
   },
-  "name": "twitch-panels"
+  "name": "twitch-panels",
+  "description": "Generates Twitch panels."
 }
