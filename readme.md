@@ -1,19 +1,70 @@
 # TwitchPanels
 
 
-Generates Twitch panels.
+<a href="https://raw.githubusercontent.com/Jaid/twitch-panels/master/license.txt"><img src="https://img.shields.io/github/license/Jaid/twitch-panels?style=flat-square" alt="License"/></a>  
+<a href="https://actions-badge.atrox.dev/Jaid/twitch-panels/goto"><img src="https://img.shields.io/endpoint.svg?style=flat-square&url=https%3A%2F%2Factions-badge.atrox.dev%2FJaid%2Ftwitch-panels%2Fbadge" alt="Build status"/></a> <a href="https://github.com/Jaid/twitch-panels/commits"><img src="https://img.shields.io/github/commits-since/Jaid/twitch-panels/v2.0.2?style=flat-square&logo=github" alt="Commits since v2.0.2"/></a> <a href="https://github.com/Jaid/twitch-panels/commits"><img src="https://img.shields.io/github/last-commit/Jaid/twitch-panels?style=flat-square&logo=github" alt="Last commit"/></a> <a href="https://github.com/Jaid/twitch-panels/issues"><img src="https://img.shields.io/github/issues/Jaid/twitch-panels?style=flat-square&logo=github" alt="Issues"/></a>  
+<a href="https://npmjs.com/package/twitch-panels"><img src="https://img.shields.io/npm/v/twitch-panels?style=flat-square&logo=npm&label=latest%20version" alt="Latest version on npm"/></a> <a href="https://github.com/Jaid/twitch-panels/network/dependents"><img src="https://img.shields.io/librariesio/dependents/npm/twitch-panels?style=flat-square&logo=npm" alt="Dependents"/></a> <a href="https://npmjs.com/package/twitch-panels"><img src="https://img.shields.io/npm/dm/twitch-panels?style=flat-square&logo=npm" alt="Downloads"/></a>
+
+**Generates Twitch panels.**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Installation
-<a href='https://npmjs.com/package/twitch-panels'><img alt='npm logo' src='https://github.com/Jaid/action-readme/raw/master/images/base-assets/npm.png'/></a>
+<a href="https://npmjs.com/package/twitch-panels"><img src="https://img.shields.io/badge/npm-twitch--panels-C23039?style=flat-square&logo=npm" alt="twitch-panels on npm"/></a>
 ```bash
 npm install --global twitch-panels@^2.0.2
 ```
-<a href='https://yarnpkg.com/package/twitch-panels'><img alt='Yarn logo' src='https://github.com/Jaid/action-readme/raw/master/images/base-assets/yarn.png'/></a>
+<a href="https://yarnpkg.com/package/twitch-panels"><img src="https://img.shields.io/badge/Yarn-twitch--panels-2F8CB7?style=flat-square&logo=yarn&logoColor=white" alt="twitch-panels on Yarn"/></a>
 ```bash
 yarn global add twitch-panels@^2.0.2
 ```
 
 
+
+
+## CLI Usage
+After installing package `twitch-panels` globally, you can use its command line interface.
+```bash
+twitch-panels
+```
+For usage instructions:
+```bash
+twitch-panels --help
+```
+
+
+
+
+## Development
+
+
+
+Setting up:
+```bash
+git clone git@github.com:Jaid/twitch-panels.git
+cd twitch-panels
+npm install
+```
+Testing:
+```bash
+npm run test:dev
+```
+Testing in production environment:
+```bash
+npm run test
+```
 
 
 ## License
