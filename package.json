@@ -46,5 +46,9 @@
   },
   "name": "twitch-panels",
   "description": "Generates Twitch panels.",
-  "funding": "https://github.com/sponsors/jaid"
+  "funding": "https://github.com/sponsors/jaid",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaid/twitch-panels"
+  }
 }
