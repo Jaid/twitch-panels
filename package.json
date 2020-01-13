@@ -45,5 +45,6 @@
     "prepareActionJest": "npm run build:prod"
   },
   "name": "twitch-panels",
-  "description": "Generates Twitch panels."
+  "description": "Generates Twitch panels.",
+  "funding": "https://github.com/sponsors/jaid"
 }
