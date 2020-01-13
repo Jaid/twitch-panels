@@ -1,16 +1,16 @@
-import path from "path"
-
-import puppeteer from "puppeteer"
-import sharp from "sharp"
-import {stringify} from "query-string"
-import {isString, isNumber, random, padStart} from "lodash"
 import fsp from "@absolunet/fsp"
-import {CookieJar, Cookie} from "tough-cookie"
-import {logger, config, got, appFolder} from "src/core"
-import UserAgent from "user-agents"
-import CookieFileStore from "tough-cookie-file-store"
-import hasContent from "has-content"
 import ensureArray from "ensure-array"
+import hasContent from "has-content"
+import {isNumber, isString, padStart, random} from "lodash"
+import path from "path"
+import puppeteer from "puppeteer"
+import {stringify} from "query-string"
+import sharp from "sharp"
+import {Cookie, CookieJar} from "tough-cookie"
+import CookieFileStore from "tough-cookie-file-store"
+import UserAgent from "user-agents"
+
+import {appFolder, config, got, logger} from "src/core"
 
 const userAgentRoller = new UserAgent({deviceCategory: "tablet"})
 
@@ -19,8 +19,8 @@ const addons = ["answers", "commands"]
 export default class {
 
   async init() {
-    const commandsResponse = await got("https://jaidbot.jaid.codes/commands", {json: true})
-    this.commands = commandsResponse.body
+    // const commandsResponse = await got("https://jaidbot.jaid.codes/commands", {json: true})
+    // this.commands = commandsResponse.body
     this.answers = config.answers
   }
 
