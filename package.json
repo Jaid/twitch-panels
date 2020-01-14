@@ -32,7 +32,7 @@
   },
   "scripts": {
     "clean": "rimraf dist/",
-    "start": "npm run build:dev && node --inspect=9229 $(npx find-by-extension-cli js --fullPath --cwd dist/package/development)",
+    "start": "NODE_ENV=development npx webpack && node --inspect=localhost:$(get-port) $(find-by-extension-cli js --fullPath --cwd dist/package/development)",
     "babel:prod": "rimraf dist/transpiled/production && NODE_ENV=production babel --out-dir dist/transpiled/production --source-maps true src",
     "babel:dev": "rimraf dist/transpiled/development && NODE_ENV=development babel --out-dir dist/transpiled/development src",
     "babel:test": "rimraf dist/transpiled/test && NODE_ENV=test babel --out-dir dist/transpiled/test src",
