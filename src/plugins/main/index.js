@@ -179,6 +179,7 @@ export default class extends JaidCorePlugin {
       })
       const channelPanels = JSON.parse(channelPanelsResponse.body)[0].data.user.panels
       const deleteChannelPanelJobs = channelPanels.filter(({type}) => type === "DEFAULT").map(async ({id}) => {
+        debugger
         await gqlGot({
           json: [
             {
@@ -263,8 +264,7 @@ export default class extends JaidCorePlugin {
         })
       }
     } catch (error) {
-      this.logError(`Failed to run: ${error}`)
-      this.logError(error)
+      this.logError("Failed to run %s", error)
     }
     await browser?.close()
   }
