@@ -9,7 +9,7 @@
     "ensure-array": "^1.0.0",
     "got": "^10.2.2",
     "has-content": "^1.1.0",
-    "jaid-core": "^7.3.3",
+    "jaid-core": "^7.3.4",
     "lodash": "^4.17.15",
     "puppeteer": "^2.0.0",
     "query-string": "^6.9.0",
