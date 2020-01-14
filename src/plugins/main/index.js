@@ -19,6 +19,11 @@ const addons = ["answers", "commands"]
 
 export default class extends JaidCorePlugin {
 
+  /**
+   * @type {import("got").Got}
+   */
+  got = null
+
   async init() {
     // const commandsResponse = await got("https://jaidbot.jaid.codes/commands", {json: true})
     // this.commands = commandsResponse.body
@@ -136,8 +141,13 @@ export default class extends JaidCorePlugin {
         },
         cookieJar,
       })
-      const verifyEmailResponse = await sessionGot.post("https://gql.twitch.tv/gql", {
-        body: [
+      const gqlGot = sessionGot.extend({
+        prefixUrl: "https://gql.twitch.tv/gql",
+        method: "post",
+        responseType: "json",
+      })
+      const verifyEmailResponse = await gqlGot({
+        json: [
           {
             operationName: "VerifyEmail_CurrentUser",
             extensions: {
@@ -147,14 +157,14 @@ export default class extends JaidCorePlugin {
               },
             },
           },
-        ] |> JSON.stringify,
+        ],
       })
       const twitchId = JSON.parse(verifyEmailResponse.body)[0].data?.currentUser?.id
       if (!twitchId) {
         throw new Error("Not logged in!")
       }
-      const channelPanelsResponse = await sessionGot.post("https://gql.twitch.tv/gql", {
-        body: [
+      const channelPanelsResponse = await gqlGot({
+        json: [
           {
             operationName: "ChannelPanels",
             variables: {id: twitchId},
@@ -165,12 +175,12 @@ export default class extends JaidCorePlugin {
               },
             },
           },
-        ] |> JSON.stringify,
+        ],
       })
       const channelPanels = JSON.parse(channelPanelsResponse.body)[0].data.user.panels
       const deleteChannelPanelJobs = channelPanels.filter(({type}) => type === "DEFAULT").map(async ({id}) => {
-        await sessionGot.post("https://gql.twitch.tv/gql", {
-          body: [
+        await gqlGot({
+          json: [
             {
               operationName: "ChannelPanelsDeletePanel",
               variables: {
@@ -186,13 +196,13 @@ export default class extends JaidCorePlugin {
                 },
               },
             },
-          ] |> JSON.stringify,
+          ],
         })
       })
       await Promise.all(deleteChannelPanelJobs)
       for (const panel of panels) {
-        const createChannelPanelResponse = await sessionGot.post("https://gql.twitch.tv/gql", {
-          body: [
+        const createChannelPanelResponse = await gqlGot({
+          json: [
             {
               operationName: "ChannelPanelsCreatePanel",
               variables: {
@@ -208,16 +218,16 @@ export default class extends JaidCorePlugin {
                 },
               },
             },
-          ] |> JSON.stringify,
+          ],
         })
         const newPanelId = JSON.parse(createChannelPanelResponse.body)[0].data.createPanel.panel.id
         const uploadPanelImageResponse = await sessionGot.post(`https://api.twitch.tv/v5/users/${twitchId}/upload_panel_image`, {
-          body: {
+          json: {
             left: 0,
             top: 0,
             width: panel.imageMeta.width,
             height: panel.imageMeta.height,
-          } |> JSON.stringify,
+          },
           headers: {
             Accept: "application/vnd.twitchtv.v5+json; charset=UTF-8",
             "Content-Type": "application/json; charset=UTF-8",
@@ -229,8 +239,8 @@ export default class extends JaidCorePlugin {
         await this.got.put(uploadUrl, {
           body: panel.imageBuffer,
         })
-        await sessionGot.post("https://gql.twitch.tv/gql", {
-          body: [
+        await gqlGot({
+          json: [
             {
               operationName: "ChannelPanelsUpdatePanel",
               variables: {
@@ -249,7 +259,7 @@ export default class extends JaidCorePlugin {
                 },
               },
             },
-          ] |> JSON.stringify,
+          ],
         })
       }
     } catch (error) {
