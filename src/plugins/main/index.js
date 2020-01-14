@@ -265,7 +265,6 @@ export default class extends JaidCorePlugin {
     } catch (error) {
       this.logError(`Failed to run: ${error}`)
       this.logError(error)
-      debugger
     }
     await browser?.close()
   }
