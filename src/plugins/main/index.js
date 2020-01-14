@@ -1,7 +1,8 @@
 import fsp from "@absolunet/fsp"
 import ensureArray from "ensure-array"
 import hasContent from "has-content"
-import {isNumber, isString, padStart, random} from "lodash"
+import {JaidCorePlugin} from "jaid-core"
+import {isNumber, isString, random} from "lodash"
 import path from "path"
 import puppeteer from "puppeteer"
 import {stringify} from "query-string"
@@ -10,18 +11,26 @@ import {Cookie, CookieJar} from "tough-cookie"
 import CookieFileStore from "tough-cookie-file-store"
 import UserAgent from "user-agents"
 
-import {appFolder, config, got, logger} from "src/core"
+import {appFolder} from "src/core"
 
 const userAgentRoller = new UserAgent({deviceCategory: "tablet"})
 
 const addons = ["answers", "commands"]
 
-export default class {
+export default class extends JaidCorePlugin {
 
   async init() {
     // const commandsResponse = await got("https://jaidbot.jaid.codes/commands", {json: true})
     // this.commands = commandsResponse.body
-    this.answers = config.answers
+    this.answers = this.config.answers
+  }
+
+  handleConfig(config) {
+    this.config = config
+  }
+
+  handleGot(got) {
+    this.got = got
   }
 
   async ready() {
@@ -30,7 +39,7 @@ export default class {
      */
     let browser
     try {
-      const outputFolder = isString(config.outputFolder) ? config.outputFolder : "dist/panels"
+      const outputFolder = isString(this.config.outputFolder) ? this.config.outputFolder : "dist/panels"
       await fsp.emptyDir(outputFolder)
       browser = await puppeteer.launch({
         defaultViewport: {
@@ -46,7 +55,7 @@ export default class {
           "--enable-font-antialiasing",
         ],
       })
-      const panelDescriptions = [...config.panels || []]
+      const panelDescriptions = [...this.config.panels || []]
       for (const addon of addons) {
         const addonHandler = require(`../../panelTypes/${addon}`).default
         if (this[addon] |> hasContent) {
@@ -64,8 +73,8 @@ export default class {
           mode: "output",
           ...panel,
         }
-        if (config.rainbow |> isNumber) {
-          query.themeColor = `hsl(${rainbowStartHue + index * config.rainbow}, 100%, 47%)`
+        if (this.config.rainbow |> isNumber) {
+          query.themeColor = `hsl(${rainbowStartHue + index * this.config.rainbow}, 100%, 47%)`
         }
         if (query.points) {
           query.content = query.content || ""
@@ -73,7 +82,7 @@ export default class {
           query.content += ensureArray(query.points).map(line => `{center:${line}}`).join("{br:2}")
         }
         const panelUrl = `https://panel.jaid.codes?${stringify(query)}`
-        logger.info("Rendering %s?%s", "https://panel.jaid.codes", stringify(query))
+        this.log(`${"Rendering https://panel.jaid.codes?"}${stringify(query)}`)
         const page = await browser.newPage()
         await page.goto(panelUrl)
         await page.evaluateHandle("document.fonts.ready")
@@ -86,7 +95,7 @@ export default class {
         sharpImage.png()
         const imageMeta = await sharpImage.metadata()
         const imageBuffer = await sharpImage.toBuffer()
-        const fileName = `${padStart(index + 1, 3, 0)}.png`
+        const fileName = `${String(index + 1).padStart(3, 0)}.png`
         await fsp.outputFile(path.join(outputFolder, fileName), imageBuffer)
         return {
           imageBuffer,
@@ -96,16 +105,16 @@ export default class {
       })
       const panels = await Promise.all(renderPanelsJobs)
       panels.reverse() // Twitch panel editor needs them in reverse order
-      if (config.dry) {
-        logger.info("Ended early, because this was a dry run")
+      if (this.config.dry) {
+        this.log("Ended early, because this was a dry run")
         process.exit(0)
       }
       const cookieFile = path.join(appFolder, "cookies.json")
       const cookieStore = new CookieFileStore(cookieFile)
       const cookieJar = new CookieJar(cookieStore)
       const cookies = {
-        api_token: config.twitchApiToken,
-        "auth-token": config.twitchAccessToken,
+        api_token: this.config.twitchApiToken,
+        "auth-token": this.config.twitchAccessToken,
       }
       for (const [key, value] of Object.entries(cookies)) {
         const cookie = new Cookie({
@@ -117,12 +126,12 @@ export default class {
         })
         cookieJar.setCookieSync(cookie, "https://twitch.tv")
       }
-      const sessionGot = got.extend({
+      const sessionGot = this.got.extend({
         headers: {
           "Accept-Language": "en-US",
           "User-Agent": userAgentRoller.random().toString(),
-          "Client-Id": config.twitchWebClientId,
-          Authorization: `OAuth ${config.twitchAccessToken}`,
+          "Client-Id": this.config.twitchWebClientId,
+          Authorization: `OAuth ${this.config.twitchAccessToken}`,
           "Content-Type": "text/plain;charset=UTF-8",
         },
         cookieJar,
@@ -213,11 +222,11 @@ export default class {
             Accept: "application/vnd.twitchtv.v5+json; charset=UTF-8",
             "Content-Type": "application/json; charset=UTF-8",
             "X-Requested-With": "XMLHttpRequest",
-            "Twitch-Api-Token": config.twitchApiToken,
+            "Twitch-Api-Token": this.config.twitchApiToken,
           },
         })
         const {url: uploadUrl, upload_id: uploadId} = JSON.parse(uploadPanelImageResponse.body)
-        await got.put(uploadUrl, {
+        await this.got.put(uploadUrl, {
           body: panel.imageBuffer,
         })
         await sessionGot.post("https://gql.twitch.tv/gql", {
@@ -244,7 +253,9 @@ export default class {
         })
       }
     } catch (error) {
-      logger.error("Failed to run: %s", error)
+      this.logError(`Failed to run: ${error}`)
+      this.logError(error)
+      debugger
     }
     await browser?.close()
   }

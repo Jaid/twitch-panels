@@ -3,7 +3,6 @@ import JaidCore from "jaid-core"
 const core = new JaidCore({
   name: _PKG_TITLE,
   version: _PKG_VERSION,
-  gotLogLevel: "info",
   useGot: true,
   configSetup: {
     defaults: {
