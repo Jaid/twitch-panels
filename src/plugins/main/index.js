@@ -50,7 +50,6 @@ export default class extends JaidCorePlugin {
         defaultViewport: {
           width: 320,
           height: 600,
-          isLandscape: true,
         },
         devtools: false,
         args: [
@@ -145,83 +144,90 @@ export default class extends JaidCorePlugin {
         prefixUrl: "https://gql.twitch.tv/gql",
         method: "post",
         responseType: "json",
+        hooks: {
+          beforeRequest: [
+            request => {
+              request.body = JSON.stringify(ensureArray(request.body))
+              return request
+            },
+          ],
+        },
       })
       const verifyEmailResponse = await gqlGot({
-        json: [
-          {
-            operationName: "VerifyEmail_CurrentUser",
-            extensions: {
-              persistedQuery: {
-                version: 1,
-                sha256Hash: "f9e7dcdf7e99c314c82d8f7f725fab5f99d1df3d7359b53c9ae122deec590198",
-              },
+        body: {
+          operationName: "VerifyEmail_CurrentUser",
+          extensions: {
+            persistedQuery: {
+              version: 1,
+              sha256Hash: "f9e7dcdf7e99c314c82d8f7f725fab5f99d1df3d7359b53c9ae122deec590198",
             },
           },
-        ],
+        },
       })
-      const twitchId = JSON.parse(verifyEmailResponse.body)[0].data?.currentUser?.id
+      const twitchId = verifyEmailResponse.body[0].data?.currentUser?.id
       if (!twitchId) {
         throw new Error("Not logged in!")
       }
       const channelPanelsResponse = await gqlGot({
-        json: [
-          {
-            operationName: "ChannelPanels",
-            variables: {id: twitchId},
+        body: {
+          operationName: "ChannelPanels",
+          variables: {id: twitchId},
+          extensions: {
+            persistedQuery: {
+              version: 1,
+              sha256Hash: "236b0ec07489e5172ee1327d114172f27aceca206a1a8053106d60926a7f622e",
+            },
+          },
+        },
+      })
+      const panelOrder = []
+      const channelPanels = channelPanelsResponse.body[0].data.user.panels
+      for (const channelPanel of channelPanels) {
+        if (channelPanel.type.toLowerCase() === "extension") {
+          this.log(`Keeping panel #${channelPanel.id}, it's an extension`)
+          panelOrder.push(channelPanel.id)
+        }
+      }
+      const deleteChannelPanelJobs = channelPanels.filter(({type}) => type.toLowerCase() === "default").map(async ({id}) => {
+        await gqlGot({
+          body: {
+            operationName: "ChannelPanelsDeletePanel",
+            variables: {
+              input: {
+                id,
+                type: "DEFAULT",
+              },
+            },
             extensions: {
               persistedQuery: {
                 version: 1,
-                sha256Hash: "236b0ec07489e5172ee1327d114172f27aceca206a1a8053106d60926a7f622e",
+                sha256Hash: "9c0664f015f542319bc15a338a4f489789803bd32c3d3f51b46777728045e3bc",
               },
             },
           },
-        ],
-      })
-      const channelPanels = JSON.parse(channelPanelsResponse.body)[0].data.user.panels
-      const deleteChannelPanelJobs = channelPanels.filter(({type}) => type === "DEFAULT").map(async ({id}) => {
-        debugger
-        await gqlGot({
-          json: [
-            {
-              operationName: "ChannelPanelsDeletePanel",
-              variables: {
-                input: {
-                  id,
-                  type: "DEFAULT",
-                },
-              },
-              extensions: {
-                persistedQuery: {
-                  version: 1,
-                  sha256Hash: "9c0664f015f542319bc15a338a4f489789803bd32c3d3f51b46777728045e3bc",
-                },
-              },
-            },
-          ],
         })
       })
       await Promise.all(deleteChannelPanelJobs)
       for (const panel of panels) {
         const createChannelPanelResponse = await gqlGot({
-          json: [
-            {
-              operationName: "ChannelPanelsCreatePanel",
-              variables: {
-                input: {
-                  channelID: twitchId,
-                  type: "DEFAULT",
-                },
-              },
-              extensions: {
-                persistedQuery: {
-                  version: 1,
-                  sha256Hash: "b48b02ec8bf74c237d95efbbeff3bb73f8955b5305c5ac2a234baee5f0a06d61",
-                },
+          body: {
+            operationName: "ChannelPanelsCreatePanel",
+            variables: {
+              input: {
+                channelID: twitchId,
+                type: "DEFAULT",
               },
             },
-          ],
+            extensions: {
+              persistedQuery: {
+                version: 1,
+                sha256Hash: "b48b02ec8bf74c237d95efbbeff3bb73f8955b5305c5ac2a234baee5f0a06d61",
+              },
+            },
+          },
         })
-        const newPanelId = JSON.parse(createChannelPanelResponse.body)[0].data.createPanel.panel.id
+        const newPanelId = createChannelPanelResponse.body[0].data.createPanel.panel.id
+        panelOrder.push(newPanelId)
         const uploadPanelImageResponse = await sessionGot.post(`https://api.twitch.tv/v5/users/${twitchId}/upload_panel_image`, {
           json: {
             left: 0,
@@ -241,30 +247,29 @@ export default class extends JaidCorePlugin {
           body: panel.imageBuffer,
         })
         await gqlGot({
-          json: [
-            {
-              operationName: "ChannelPanelsUpdatePanel",
-              variables: {
-                input: {
-                  id: newPanelId,
-                  description: "",
-                  title: "",
-                  linkURL: panel.query.link || "",
-                  imageURL: `https://panels-images.twitch.tv/panel-${twitchId}-image-${uploadId}`,
-                },
-              },
-              extensions: {
-                persistedQuery: {
-                  version: 1,
-                  sha256Hash: "d6edd5143b243785d26200074f7cf287f7fc7484be7b866fd86eec4ed80fb16b",
-                },
+          body: {
+            operationName: "ChannelPanelsUpdatePanel",
+            variables: {
+              input: {
+                id: newPanelId,
+                description: "",
+                title: "",
+                linkURL: panel.query.link || "",
+                imageURL: `https://panels-images.twitch.tv/panel-${twitchId}-image-${uploadId}`,
               },
             },
-          ],
+            extensions: {
+              persistedQuery: {
+                version: 1,
+                sha256Hash: "d6edd5143b243785d26200074f7cf287f7fc7484be7b866fd86eec4ed80fb16b",
+              },
+            },
+          },
         })
       }
     } catch (error) {
       this.logError("Failed to run %s", error)
+      debugger
     }
     await browser?.close()
   }
