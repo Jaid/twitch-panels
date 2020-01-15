@@ -267,6 +267,22 @@ export default class extends JaidCorePlugin {
           },
         })
       }
+      await gqlGot({
+        body: {
+          operationName: "ChannelPanelsOrderPanels",
+          variables: {
+            input: {
+              ids: panelOrder,
+            },
+          },
+          extensions: {
+            persistedQuery: {
+              version: 1,
+              sha256Hash: "c94ed25caf158e3c976b8df8f1875970046ada6aeebf47b8eac3f5208a65828b",
+            },
+          },
+        },
+      })
     } catch (error) {
       this.logError("Failed to run %s", error)
       debugger
