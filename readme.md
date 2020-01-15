@@ -1,7 +1,7 @@
 # TwitchPanels
 
 
-<a href="https://raw.githubusercontent.com/jaid/twitch-panels/master/license.txt"><img src="https://img.shields.io/github/license/jaid/twitch-panels?style=flat-square" alt="License"/></a> <a href="https://github.com/sponsors/jaid"><img src="https://img.shields.io/badge/<3-Sponsor-FF45F1?style=flat-square" alt="Sponsor twitch-panels"/></a>
+<a href="https://raw.githubusercontent.com/jaid/twitch-panels/master/license.txt"><img src="https://img.shields.io/github/license/jaid/twitch-panels?style=flat-square" alt="License"/></a> <a href="https://github.com/sponsors/jaid"><img src="https://img.shields.io/badge/<3-Sponsor-FF45F1?style=flat-square" alt="Sponsor twitch-panels"/></a>  
 <a href="https://actions-badge.atrox.dev/jaid/twitch-panels/goto"><img src="https://img.shields.io/endpoint.svg?style=flat-square&url=https%3A%2F%2Factions-badge.atrox.dev%2Fjaid%2Ftwitch-panels%2Fbadge" alt="Build status"/></a> <a href="https://github.com/jaid/twitch-panels/commits"><img src="https://img.shields.io/github/commits-since/jaid/twitch-panels/v2.0.2?style=flat-square&logo=github" alt="Commits since v2.0.2"/></a> <a href="https://github.com/jaid/twitch-panels/commits"><img src="https://img.shields.io/github/last-commit/jaid/twitch-panels?style=flat-square&logo=github" alt="Last commit"/></a> <a href="https://github.com/jaid/twitch-panels/issues"><img src="https://img.shields.io/github/issues/jaid/twitch-panels?style=flat-square&logo=github" alt="Issues"/></a>  
 <a href="https://npmjs.com/package/twitch-panels"><img src="https://img.shields.io/npm/v/twitch-panels?style=flat-square&logo=npm&label=latest%20version" alt="Latest version on npm"/></a> <a href="https://github.com/jaid/twitch-panels/network/dependents"><img src="https://img.shields.io/librariesio/dependents/npm/twitch-panels?style=flat-square&logo=npm" alt="Dependents"/></a> <a href="https://npmjs.com/package/twitch-panels"><img src="https://img.shields.io/npm/dm/twitch-panels?style=flat-square&logo=npm" alt="Downloads"/></a>
 
@@ -10,16 +10,6 @@
 #### Opinionated
 
 This project is tailored to my personal needs and workflows and therefore highly opinionated. Feel free to use it or get inspired by it, but please do not get frustrated if you come across weird features or have difficulties integrating it in your own ecosystem.
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -33,6 +23,16 @@ npm install --global twitch-panels@^2.0.2
 ```bash
 yarn global add twitch-panels@^2.0.2
 ```
+
+
+
+
+
+
+
+
+
+
 
 
 
