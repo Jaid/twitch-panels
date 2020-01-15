@@ -11,19 +11,6 @@ const core = new JaidCore({
       outputFolder: true,
       rainbow: false,
       twitchWebClientId: "kimne78kx3ncx6brgo4mv6wki5h1ko",
-      panels: [
-        {
-          title: "hi",
-          content: "Test",
-        },
-      ],
-      answers: [
-        {
-          question: "What is your password?",
-          answer: "hunter2",
-        },
-      ],
-
     },
     secretKeys: [
       "twitchApiToken",

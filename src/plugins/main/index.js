@@ -1,11 +1,12 @@
 import fsp from "@absolunet/fsp"
 import ensureArray from "ensure-array"
-import hasContent from "has-content"
+import {isEmpty} from "has-content"
 import {JaidCorePlugin} from "jaid-core"
 import {isNumber, isString, random} from "lodash"
 import path from "path"
 import puppeteer from "puppeteer"
 import {stringify} from "query-string"
+import readFileYaml from "read-file-yaml"
 import sharp from "sharp"
 import {Cookie, CookieJar} from "tough-cookie"
 import CookieFileStore from "tough-cookie-file-store"
@@ -15,7 +16,7 @@ import {appFolder} from "src/core"
 
 const userAgentRoller = new UserAgent({deviceCategory: "tablet"})
 
-const addons = ["answers", "commands"]
+const addons = ["panels", "answers", "commands"]
 
 export default class extends JaidCorePlugin {
 
@@ -25,9 +26,7 @@ export default class extends JaidCorePlugin {
   got = null
 
   async init() {
-    // const commandsResponse = await got("https://jaidbot.jaid.codes/commands", {json: true})
-    // this.commands = commandsResponse.body
-    this.answers = this.config.answers
+
   }
 
   handleConfig(config) {
@@ -59,12 +58,21 @@ export default class extends JaidCorePlugin {
           "--enable-font-antialiasing",
         ],
       })
-      const panelDescriptions = [...this.config.panels || []]
+      const panelDescriptions = []
       for (const addon of addons) {
-        const addonHandler = require(`../../panelTypes/${addon}`).default
-        if (this[addon] |> hasContent) {
-          Array.prototype.push.apply(panelDescriptions, addonHandler(this[addon]))
+        const file = path.join(this.core.appFolder, `${addon}.yml`)
+        this.log(`Reading ${file}`)
+        const data = await readFileYaml(file)
+        if (data === null) {
+          continue
         }
+        if (isEmpty(data)) {
+          continue
+        }
+        this[addon] = ensureArray(data)
+        this.log(`Loaded ${addon}: ${this[addon].length}`)
+        const addonHandler = require(`../../panelTypes/${addon}`).default
+        Array.prototype.push.apply(panelDescriptions, addonHandler(this[addon]))
       }
       const rainbowStartHue = random(360)
       const renderPanelsJobs = panelDescriptions.map(async (panel, index) => {
@@ -108,7 +116,6 @@ export default class extends JaidCorePlugin {
         }
       })
       const panels = await Promise.all(renderPanelsJobs)
-      panels.reverse() // Twitch panel editor needs them in reverse order
       if (this.config.dry) {
         this.log("Ended early, because this was a dry run")
         process.exit(0)

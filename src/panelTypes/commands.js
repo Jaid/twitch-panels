@@ -33,7 +33,6 @@ export default commands => {
       content,
       title: command.usage,
       titleFont: "Ubuntu",
-      icon: "comment",
       titleFontSize: 24,
       themeColor: colors[command.permission] || "#0072AE",
       ...command.panel || {},
