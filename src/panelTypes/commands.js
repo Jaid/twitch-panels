@@ -28,7 +28,7 @@ export default commands => {
     let content = ""
     const topic = topics[command.for]
     if (topic) {
-      content += `{imgcenter:${topic.icon}::für ${topic.title}}{br:6}`
+      content += `{imgcenter:${topic.icon}::Ausgelegt auf ${topic.title}}{br:6}`
     }
     if (command.permission === "mod") {
       content += "{iconcenter:lock/Nur für Moderatoren}{br:6}"
