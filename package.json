@@ -47,7 +47,7 @@
     "prepareActionJest": "npm run build:prod"
   },
   "name": "twitch-panels",
-  "description": "Generates Twitch panels.",
+  "description": "CLI that generates Twitch panels as PNGs.",
   "funding": "https://github.com/sponsors/jaid",
   "repository": {
     "type": "git",
