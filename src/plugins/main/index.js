@@ -94,7 +94,9 @@ export default class extends JaidCorePlugin {
           query.content += ensureArray(query.points).map(line => `{center:${line}}`).join("{br:2}")
         }
         const panelUrl = `https://panel.jaid.codes?${stringify(query)}`
-        this.log(`${"Rendering https://panel.jaid.codes?"}${stringify(query)}`)
+        const indexString = String(index + 1).padStart(3, 0)
+        this.log(`Rendering ${indexString}: ${query.title || "(no title)"}`)
+        this.logDebug(`https://panel.jaid.codes?${stringify(query)}`)
         const page = await browser.newPage()
         await page.goto(panelUrl)
         await page.evaluateHandle("document.fonts.ready")
@@ -107,7 +109,7 @@ export default class extends JaidCorePlugin {
         sharpImage.png()
         const imageMeta = await sharpImage.metadata()
         const imageBuffer = await sharpImage.toBuffer()
-        const fileName = `${String(index + 1).padStart(3, 0)}.png`
+        const fileName = `${indexString}.png`
         await fsp.outputFile(path.join(outputFolder, fileName), imageBuffer)
         return {
           imageBuffer,
