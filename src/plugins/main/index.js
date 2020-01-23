@@ -98,8 +98,8 @@ export default class extends JaidCorePlugin {
         this.log(`Rendering ${indexString}: ${query.title || "(no title)"}`)
         this.logDebug(`https://panel.jaid.codes?${stringify(query)}`)
         const page = await browser.newPage()
-        await page.goto(panelUrl)
-        await page.evaluateHandle("document.fonts.ready")
+        await page.goto(panelUrl, {waitUntil: "domcontentloaded"})
+        await page.waitForSelector("body div")
         const buffer = await page.screenshot({
           omitBackground: true,
         })
