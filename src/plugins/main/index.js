@@ -190,11 +190,17 @@ export default class extends JaidCorePlugin {
         },
       })
       const panelOrder = []
+      const extensionPanelIds = []
       const channelPanels = channelPanelsResponse.body[0].data.user.panels
       for (const channelPanel of channelPanels) {
         if (channelPanel.type.toLowerCase() === "extension") {
           this.log(`Keeping panel #${channelPanel.id}, it's an extension`)
-          panelOrder.push(channelPanel.id)
+          extensionPanelIds.push(channelPanel.id)
+        }
+      }
+      if (this.config.extensionsOnTop) {
+        for (const extensionPanelId of extensionPanelIds) {
+          panelOrder.push(extensionPanelId)
         }
       }
       const deleteChannelPanelJobs = channelPanels.filter(({type}) => type.toLowerCase() === "default").map(async ({id}) => {
@@ -275,6 +281,11 @@ export default class extends JaidCorePlugin {
             },
           },
         })
+      }
+      if (!this.config.extensionsOnTop) {
+        for (const extensionPanelId of extensionPanelIds) {
+          panelOrder.push(extensionPanelId)
+        }
       }
       await gqlGot({
         body: {
