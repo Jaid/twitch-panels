@@ -11,6 +11,7 @@ import sharp from "sharp"
 import {Cookie, CookieJar} from "tough-cookie"
 import CookieFileStore from "tough-cookie-file-store"
 import UserAgent from "user-agents"
+import delay from "delay"
 
 import {appFolder} from "src/core"
 
@@ -100,6 +101,7 @@ export default class extends JaidCorePlugin {
         const page = await browser.newPage()
         await page.goto(panelUrl, {waitUntil: "domcontentloaded"})
         await page.waitForSelector("body div")
+        await delay(1000)
         const buffer = await page.screenshot({
           omitBackground: true,
         })
