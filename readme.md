@@ -15,13 +15,23 @@ This project is tailored to my personal needs and workflows and therefore highly
 
 
 ## Installation
+
 <a href="https://npmjs.com/package/twitch-panels"><img src="https://img.shields.io/badge/npm-twitch--panels-C23039?style=flat-square&logo=npm" alt="twitch-panels on npm"/></a>
+
 ```bash
 npm install --global twitch-panels@^3.3.0
 ```
+
 <a href="https://yarnpkg.com/package/twitch-panels"><img src="https://img.shields.io/badge/Yarn-twitch--panels-2F8CB7?style=flat-square&logo=yarn&logoColor=white" alt="twitch-panels on Yarn"/></a>
+
 ```bash
 yarn global add twitch-panels@^3.3.0
+```
+
+<a href="https://github.com/jaid/twitch-panels/packages"><img src="https://img.shields.io/badge/GitHub Packages-@jaid/twitch--panels-24282e?style=flat-square&logo=github" alt="@jaid/twitch-panels on GitHub Packages"/></a> <span style="vertical-align: top">(if <a style="vertical-align: top" href='https://help.github.com/en/github/managing-packages-with-github-packages/configuring-npm-for-use-with-github-packages'>configured properly</a>)</span>
+
+```bash
+npm install --global @jaid/twitch-panels@^3.3.0
 ```
 
 
