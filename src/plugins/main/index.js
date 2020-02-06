@@ -12,6 +12,7 @@ import {Cookie, CookieJar} from "tough-cookie"
 import CookieFileStore from "tough-cookie-file-store"
 import UserAgent from "user-agents"
 import delay from "delay"
+import pRetry from "p-retry"
 
 import {appFolder} from "src/core"
 
@@ -245,6 +246,7 @@ export default class extends JaidCorePlugin {
         })
         const newPanelId = createChannelPanelResponse.body[0].data.createPanel.panel.id
         panelOrder.push(newPanelId)
+      const initUpload = async () => {
         const uploadPanelImageResponse = await sessionGot.post(`https://api.twitch.tv/v5/users/${twitchId}/upload_panel_image`, {
           json: {
             left: 0,
@@ -258,6 +260,14 @@ export default class extends JaidCorePlugin {
             "X-Requested-With": "XMLHttpRequest",
             "Twitch-Api-Token": this.config.twitchApiToken,
           },
+        })
+        return uploadPanelImageResponse
+      }
+        const uploadPanelImageResponse = await pRetry(initUpload, {
+          retries: 5,
+          onFailedAttempt: () => {
+            this.logWarn("Retry...")
+          }
         })
         const {url: uploadUrl, upload_id: uploadId} = JSON.parse(uploadPanelImageResponse.body)
         await this.got.put(uploadUrl, {
