@@ -28,7 +28,8 @@ npm install --global twitch-panels@^3.4.0
 yarn global add twitch-panels@^3.4.0
 ```
 
-<a href="https://github.com/jaid/twitch-panels/packages"><img src="https://img.shields.io/badge/GitHub Packages-@jaid/twitch--panels-24282e?style=flat-square&logo=github" alt="@jaid/twitch-panels on GitHub Packages"/></a> <span style="vertical-align: top">(if <a style="vertical-align: top" href='https://help.github.com/en/github/managing-packages-with-github-packages/configuring-npm-for-use-with-github-packages'>configured properly</a>)</span>
+<a href="https://github.com/jaid/twitch-panels/packages"><img src="https://img.shields.io/badge/GitHub Packages-@jaid/twitch--panels-24282e?style=flat-square&logo=github" alt="@jaid/twitch-panels on GitHub Packages"/></a>  
+(if [configured properly](https://help.github.com/en/github/managing-packages-with-github-packages/configuring-npm-for-use-with-github-packages))
 
 ```bash
 npm install --global @jaid/twitch-panels@^3.4.0
