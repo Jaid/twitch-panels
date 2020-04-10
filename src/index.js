@@ -42,4 +42,5 @@ function main() {
 yargs
   .scriptName(_PKG_NAME)
   .version(_PKG_VERSION)
-  .command("$0", _PKG_DESCRIPTION, {}, main).argv
+  .command("$0", _PKG_DESCRIPTION, main)
+  .argv
