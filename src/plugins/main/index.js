@@ -63,7 +63,7 @@ export default class extends JaidCorePlugin {
       const panelDescriptions = []
       for (const addon of addons) {
         const file = path.join(this.core.appFolder, `${addon}.yml`)
-        this.log(`Reading ${file}`)
+        this.logger.info(`Reading ${file}`)
         const data = await readFileYaml(file)
         if (data === null) {
           continue
@@ -72,7 +72,7 @@ export default class extends JaidCorePlugin {
           continue
         }
         this[addon] = ensureArray(data)
-        this.log(`Loaded ${addon}: ${this[addon].length}`)
+        this.logger.info(`Loaded ${addon}: ${this[addon].length}`)
         const addonHandler = require(`../../panelTypes/${addon}`).default
         Array.prototype.push.apply(panelDescriptions, addonHandler(this[addon]))
       }
@@ -97,8 +97,8 @@ export default class extends JaidCorePlugin {
         }
         const panelUrl = `https://panel.jaid.codes?${stringify(query)}`
         const indexString = String(index + 1).padStart(3, 0)
-        this.log(`Rendering ${indexString}: ${query.title || "(no title)"}`)
-        this.logDebug(`https://panel.jaid.codes?${stringify(query)}`)
+        this.logger.info(`Rendering ${indexString}: ${query.title || "(no title)"}`)
+        this.logger.debug(`https://panel.jaid.codes?${stringify(query)}`)
         const page = await browser.newPage()
         await page.goto(panelUrl, {waitUntil: "domcontentloaded"})
         await page.waitForSelector("body div")
@@ -122,7 +122,7 @@ export default class extends JaidCorePlugin {
       })
       const panels = await Promise.all(renderPanelsJobs)
       if (this.config.dry) {
-        this.log("Ended early, because this was a dry run")
+        this.logger.info("Ended early, because this was a dry run")
         process.exit(0)
       }
       const cookieFile = path.join(appFolder, "cookies.json")
@@ -197,7 +197,7 @@ export default class extends JaidCorePlugin {
       const channelPanels = channelPanelsResponse.body[0].data.user.panels
       for (const channelPanel of channelPanels) {
         if (channelPanel.type.toLowerCase() === "extension") {
-          this.log(`Keeping panel #${channelPanel.id}, it's an extension`)
+          this.logger.info(`Keeping panel #${channelPanel.id}, it's an extension`)
           extensionPanelIds.push(channelPanel.id)
         }
       }
@@ -266,7 +266,7 @@ export default class extends JaidCorePlugin {
         const uploadPanelImageResponse = await pRetry(initUpload, {
           retries: 5,
           onFailedAttempt: () => {
-            this.logWarn("Retry...")
+            this.logger.warn("Retry...")
           }
         })
         const {url: uploadUrl, upload_id: uploadId} = JSON.parse(uploadPanelImageResponse.body)
@@ -316,7 +316,7 @@ export default class extends JaidCorePlugin {
         },
       })
     } catch (error) {
-      this.logError("Failed to run %s", error)
+      this.logger.error("Failed to run %s", error)
       debugger
     }
     await browser?.close()
