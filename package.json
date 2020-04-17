@@ -5,13 +5,12 @@
   "author": "Jaid <jaid.jsx@gmail.com> (https://github.com/Jaid)",
   "dependencies": {
     "@absolunet/fsp": "^1.6.2",
-    "@babel/runtime": "^7.9.2",
     "ensure-array": "^1.0.0",
     "got": "^10.7.0",
     "has-content": "^1.1.1",
     "jaid-core": "^8.0.3",
     "lodash": "^4.17.15",
-    "puppeteer": "^2.1.1",
+    "puppeteer": "^3.0.0",
     "query-string": "^6.12.1",
     "read-file-yaml": "^1.0.2",
     "sharp": "^0.25.2",
@@ -23,7 +22,7 @@
   "devDependencies": {
     "acorn": "^7.1.1",
     "babel-jest": "^25.3.0",
-    "babel-preset-jaid": "^7.3.6",
+    "babel-preset-jaid": "^8.0.0",
     "browserslist-config-jaid-node": "^2.2.2",
     "delay": "^4.3.0",
     "eslint": "^6.8.0",
