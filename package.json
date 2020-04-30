@@ -53,5 +53,15 @@
     "url": "https://github.com/jaid/twitch-panels"
   },
   "homepage": "https://github.com/Jaid/twitch-panels",
-  "keywords": []
+  "keywords": [
+    "automation",
+    "cli",
+    "generate",
+    "generation",
+    "render",
+    "rendering",
+    "twitch",
+    "twitch-panels",
+    "twitchtv"
+  ]
 }
