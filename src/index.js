@@ -1,26 +1,32 @@
+import readableMs from "readable-ms"
 import yargs from "yargs"
 
 import core from "./core"
 
-function logError(message) {
-  if (core?.logger?.error) {
-    core.logger.error(message)
+/**
+ * @param {*} message
+ * @param {string} [level="info"]
+ */
+function log(message, level = "info") {
+  if (core?.logger?.[level]) {
+    core.logger[level](message)
   } else {
-    console.error(message)
+    console[level](message)
   }
 }
 
 process.on("unhandledRejection", error => {
-  if (error) {
-    logError(`Unhandled promise rejection: ${error?.message || error}`)
-  } else {
-    logError("Unhandled promise rejection")
-  }
-  if (error?.stack) {
-    logError(error.stack)
-  }
+  log("Unhandled promise rejection", "error")
+  log(error, "error")
 })
 
+process.on("exit", code => {
+  log(`Exiting with code ${code} after ${readableMs(Date.now() - core.startTime)}`)
+})
+
+/**
+ * @return {Promise<void>}
+ */
 async function job() {
   const plugins = {}
   const pluginsRequire = require.context("./plugins/", true, /^\.\/\w+\/index.js$/)
@@ -33,7 +39,8 @@ async function job() {
 
 function main() {
   job().catch(error => {
-    logError("Core process crashed: %s", error)
+    log("Core process crashed", "error")
+    log(error, "error")
     process.exit(1)
   })
 }
