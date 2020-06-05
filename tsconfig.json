@@ -4,4 +4,7 @@
     "src/**/*.js",
     "src/**/*.ts",
   ],
+  "typeAcquisition": {
+    "enable": true
+  }
 }
