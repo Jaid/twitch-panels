@@ -1,8 +1,10 @@
 import fsp from "@absolunet/fsp"
+import delay from "delay"
 import ensureArray from "ensure-array"
 import {isEmpty} from "has-content"
 import {JaidCorePlugin} from "jaid-core"
 import {isNumber, isString, random} from "lodash"
+import pRetry from "p-retry"
 import path from "path"
 import puppeteer from "puppeteer"
 import {stringify} from "query-string"
@@ -11,8 +13,6 @@ import sharp from "sharp"
 import {Cookie, CookieJar} from "tough-cookie"
 import CookieFileStore from "tough-cookie-file-store"
 import UserAgent from "user-agents"
-import delay from "delay"
-import pRetry from "p-retry"
 
 import {appFolder} from "src/core"
 
@@ -246,28 +246,28 @@ export default class extends JaidCorePlugin {
         })
         const newPanelId = createChannelPanelResponse.body[0].data.createPanel.panel.id
         panelOrder.push(newPanelId)
-      const initUpload = async () => {
-        const uploadPanelImageResponse = await sessionGot.post(`https://api.twitch.tv/v5/users/${twitchId}/upload_panel_image`, {
-          json: {
-            left: 0,
-            top: 0,
-            width: panel.imageMeta.width,
-            height: panel.imageMeta.height,
-          },
-          headers: {
-            Accept: "application/vnd.twitchtv.v5+json; charset=UTF-8",
-            "Content-Type": "application/json; charset=UTF-8",
-            "X-Requested-With": "XMLHttpRequest",
-            "Twitch-Api-Token": this.config.twitchApiToken,
-          },
-        })
-        return uploadPanelImageResponse
-      }
+        const initUpload = async () => {
+          const uploadPanelImageResponse = await sessionGot.post(`https://api.twitch.tv/v5/users/${twitchId}/upload_panel_image`, {
+            json: {
+              left: 0,
+              top: 0,
+              width: panel.imageMeta.width,
+              height: panel.imageMeta.height,
+            },
+            headers: {
+              Accept: "application/vnd.twitchtv.v5+json; charset=UTF-8",
+              "Content-Type": "application/json; charset=UTF-8",
+              "X-Requested-With": "XMLHttpRequest",
+              "Twitch-Api-Token": this.config.twitchApiToken,
+            },
+          })
+          return uploadPanelImageResponse
+        }
         const uploadPanelImageResponse = await pRetry(initUpload, {
           retries: 5,
           onFailedAttempt: () => {
             this.logger.warn("Retry...")
-          }
+          },
         })
         const {url: uploadUrl, upload_id: uploadId} = JSON.parse(uploadPanelImageResponse.body)
         await this.got.put(uploadUrl, {
