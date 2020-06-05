@@ -11,7 +11,7 @@ import {stringify} from "query-string"
 import readFileYaml from "read-file-yaml"
 import sharp from "sharp"
 import {Cookie, CookieJar} from "tough-cookie"
-import CookieFileStore from "tough-cookie-file-store"
+import {FileCookieStore} from "tough-cookie-file-store"
 import UserAgent from "user-agents"
 
 import {appFolder} from "src/core"
@@ -87,7 +87,7 @@ export default class extends JaidCorePlugin {
           mode: "output",
           ...panel,
         }
-        if (this.config.rainbow |> isNumber) {
+        if (isNumber(this.config.rainbow)) {
           query.themeColor = `hsl(${rainbowStartHue + index * this.config.rainbow}, 100%, 47%)`
         }
         if (query.points) {
@@ -126,7 +126,7 @@ export default class extends JaidCorePlugin {
         process.exit(0)
       }
       const cookieFile = path.join(appFolder, "cookies.json")
-      const cookieStore = new CookieFileStore(cookieFile)
+      const cookieStore = new FileCookieStore(cookieFile)
       const cookieJar = new CookieJar(cookieStore)
       const cookies = {
         api_token: this.config.twitchApiToken,
@@ -157,10 +157,10 @@ export default class extends JaidCorePlugin {
         method: "post",
         responseType: "json",
         hooks: {
-          beforeRequest: [
+          init: [
             request => {
-              request.body = JSON.stringify(ensureArray(request.body))
-              return request
+              const newBody = JSON.stringify(ensureArray(request.body))
+              request.body = newBody
             },
           ],
         },
